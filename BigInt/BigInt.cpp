@@ -215,18 +215,17 @@ BigInt BigInt::Square() {
 }
 
 BigInt BigInt::Pow(const BigInt& exponent) {
-    BigInt base = *this;  // Збереження початкового значення
+    string BinaryIntroduction = exponent.toBinaryString();
+    BigInt base = *this; 
     BigInt result(1);
 
-    BigInt exp = exponent;
-    while (exp > 0) {
-        if (exp % 2 == 1) {
+    for (int i = BinaryIntroduction.size() - 1; i >= 0; i--) {
+        if (BinaryIntroduction[i] == '1')
             result = result * base;
-        }
-        base = base.Square();
-        exp = exp / 2;
-    }
 
+        if (i > 0)
+            base = base.Square();
+    }
     return result;
 }
 
