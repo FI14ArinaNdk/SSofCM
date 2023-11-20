@@ -5,10 +5,10 @@
 #include <array>
 #include <algorithm>
 #include <bitset>
-#include <ctime>
+#include <random>
 
 using namespace std;
-const size_t ARRAY_SIZE = 512;
+const size_t ARRAY_SIZE = 1024;
 
 class BigInt {
 private:
@@ -48,5 +48,6 @@ public:
 	string toBinaryString() const;
 	void fromBinaryString(const string& binaryString);
 	BigInt ShiftBitToHigh(const int index) const;
+	BigInt generateRandomHEXNumber(const int lenght);
 
 };

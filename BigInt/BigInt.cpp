@@ -137,10 +137,12 @@ BigInt BigInt::operator + (const BigInt& other) {
 }
 
 BigInt BigInt::operator - (const BigInt& other) {
+
     if (other > *this) {
         cout << "Bigger number is subtracted from the smaller" << endl;
         return 0;
     }
+
     uint32_t borrow = 0;
     BigInt resultdifference;
     for (int i = 0; i < data.size(); i++) {
@@ -322,5 +324,16 @@ void BigInt::fromBinaryString(const string& BinaryString) {
     }
     if (shift > 0)
         data[index] = CurrentWord;
+
+}
+BigInt BigInt::generateRandomHEXNumber(const int lenght) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<uint32_t> dis(0, UINT32_MAX);
+    array<uint32_t, ARRAY_SIZE> result;
+    for (int i = 0; i < lenght; i++)
+        result[i] = dis(gen);
+    BigInt RandomNumber(result);
+    return RandomNumber;
 
 }

@@ -1,73 +1,109 @@
 #include "BigInt.h"
-#include <ctime>
+#include <chrono>
+
+using namespace std;
+using namespace std::chrono;
 
 int main() {
 
-    BigInt num1("a9694988354c96530b1a58f8ad59569af0d402ab53d275ddb5cb393f47c6b098977f181ab889d3c5ceb96b9f3c0702c947856481d654c691d0f736fa2ef7aa0fbec62224e467f741e53edf8c8fe82c13fb90ac66eee37a975f16dd9faafd213c538711bbea34fbfd8b4330e17409d5c35313743d5dea5a82d34d99a10ac9223b");
-    BigInt num2("cbe75e23d145c3dc78d76739b63d337cc33268e08ce4ea7319c38b7d057b1747d59010759f3b015858dc5a9d05ddbbd3ef41a368ba1ca6d8a6d967f2fed6b7033e7f56d46beae7c259cce870e0879f49849c956b6b6810be90d0c50c54daaef41b2b1c6e3c7b2ed35da549a7c95fd551841ea90e4196e8272b42ea3dba7cdcef");
+    BigInt num1("cbe75e23d145c3dc78d76739b63d337cc33268e08ce4ea7319c38b7d057b1747d59010759f3b015858dc5a9d05ddbbd3ef41a368ba1ca6d8a6d967f2fed6b7033e7f56d46beae7c259cce870e0879f49849c956b6b6810be90d0c50c54daaef41b2b1c6e3c7b2ed35da549a7c95fd551841ea90e4196e8272b42ea3dba7cdcef");
+    BigInt num2("d0a166bef0f8cd687a755ce64c4736e2621fe749af3c4170354c55a2728037612cf3b134550036e2de888e049ee782ab82ab99ba3442a3b4b8eb21c9f79778cff4ce0c2109a02fd18163e5155146d156b92176c03ba2b87ee53ba78217529616eea6e8432b0f736b09e30e89f3ceeaea11fb94dacd994e1fd8a6059cc14a58b2");
 
-    clock_t start_time, end_time;
-
-    start_time = clock();
     BigInt sum = num1 + num2;
-    end_time = clock();
-    double duration = static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1e9;
     cout << "num1 + num2 = " << sum.toHexString() << endl;
-    cout << "Time for Addition: " << duration << " nanoseconds" << endl;
-    
     cout << "\t" << endl;
-
-    start_time = clock();
     BigInt difference = num1 - num2;
-    end_time = clock();
-    duration = static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1e9;
     cout << "num1 - num2 = " << difference.toHexString() << endl;
-    cout << "Time for Subtraction: " << duration << " nanoseconds" << endl;
-
     cout << "\t" << endl;
-
-    start_time = clock();
     BigInt product = num1 * num2;
-    end_time = clock();
-    duration = static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1e9;
     cout << "num1 * num2 = " << product.toHexString() << endl;
-    cout << "Time for Multiplication: " << duration << " nanoseconds" << endl;
-    
     cout << "\t" << endl;
-
-    start_time = clock();
     BigInt quotient = num1 / num2;
-    end_time = clock();
-    duration = static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1e9;
     cout << "num1 / num2 = " << quotient.toHexString() << endl;
-    cout << "Time for Division: " << duration << " nanoseconds" << endl;
-
     cout << "\t" << endl;
-
-    start_time = clock();
     BigInt remainder = num1 % num2;
-    end_time = clock();
-    duration = static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1e9;
     cout << "num1 mod num2 = " << remainder.toHexString() << endl;
-    cout << "Time for Mod: " << duration << " nanoseconds" << endl;
-
     cout << "\t" << endl;
-
-    start_time = clock();
     BigInt squared = num1.Square();
-    end_time = clock();
-    duration = static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1e9;
     cout << "num1 ^ 2 = " << squared.toHexString() << endl;
-    cout << "Time for Squared: " << duration << " nanoseconds" << endl;
+    cout << "\t" << endl;
+    BigInt power = num1.Pow(9);
+    cout << "num1 ^ 9 = " << power.toHexString() << endl;
 
     cout << "\t" << endl;
+    cout << "\t" << endl;
 
-    start_time = clock();
-    BigInt power = num1.Pow(9);
-    end_time = clock();
-    duration = static_cast<double>(end_time - start_time) / CLOCKS_PER_SEC * 1e9;
-    cout << "num1 ^ 9 = " << power.toHexString() << endl;
-    cout << "Time for Power: " << duration << " nanoseconds" << endl;
+    vector<int> lenght = { 2, 50 };
+        for (const auto lenght : lenght) {
+            double AdditionTime = 0.0;
+            double SubtractionTime = 0.0;
+            double MultiplicationTime = 0.0;
+            double DivisionTime = 0.0;
+            double ModTime = 0.0;
+            double SquareTime = 0.0;
+            double PowTime = 0.0;
+
+            for (int i = 0; i < 150; i++) {
+                BigInt num1;
+                BigInt num2;
+                num1.generateRandomHEXNumber(lenght);
+                num2.generateRandomHEXNumber(lenght);
+
+                auto AdditionStartTime = high_resolution_clock::now();
+                BigInt resultAdd = num1 + num2;
+                auto AdditionEndTime = high_resolution_clock::now();
+                AdditionTime += duration_cast<nanoseconds>(AdditionEndTime - AdditionStartTime).count();
+
+                auto SubtractionStartTime = high_resolution_clock::now();
+                BigInt resultSub = num1 - num2;
+                auto SubtractionEndTime = high_resolution_clock::now();
+                SubtractionTime += duration_cast<nanoseconds>(SubtractionEndTime - SubtractionStartTime).count();
+
+                auto MultiplicationStartTime = high_resolution_clock::now();
+                BigInt resultMul = num1 * num2;
+                auto MultiplicationEndTime = high_resolution_clock::now();
+                MultiplicationTime += duration_cast<nanoseconds>(MultiplicationEndTime - MultiplicationStartTime).count();
+
+                auto DivisionStartTime = high_resolution_clock::now();
+                BigInt resultDiv = num1 / num2;
+                auto DivisionEndTime = high_resolution_clock::now();
+                DivisionTime += duration_cast<nanoseconds>(DivisionEndTime - DivisionStartTime).count();
+
+                auto ModStartTime = high_resolution_clock::now();
+                BigInt resultMod = num1 % num2;
+                auto ModEndTime = high_resolution_clock::now();
+                ModTime += duration_cast<nanoseconds>(ModEndTime - ModStartTime).count();
+
+                auto SquareStartTime = high_resolution_clock::now();
+                BigInt resultSquare = num1.Square();
+                auto SquareEndTime = high_resolution_clock::now();
+                SquareTime += duration_cast<nanoseconds>(SquareEndTime - SquareStartTime).count();
+
+                auto PowStartTime = high_resolution_clock::now();
+                BigInt resultPow = num1.Pow(9);
+                auto PowEndTime = high_resolution_clock::now();
+                PowTime += duration_cast<nanoseconds>(PowEndTime - PowStartTime).count();
+
+            }
+             
+            double AverAdditionTime = AdditionTime / 150.0;
+            double AverSubtractionTime = SubtractionTime / 150.0;
+            double AverMultiplicationTime = MultiplicationTime / 150.0;
+            double AverDivisionTime = DivisionTime / 150.0;
+            double AverModTime = ModTime / 150.0;
+            double AvarSquareTime = SquareTime / 150.0;
+            double AvarPowTime = PowTime / 150.0;
+
+            cout << "Lenght " << lenght << endl;
+            cout << "Average Addition Time: " << AverAdditionTime << " nanoseconds" << endl;
+            cout << "Average Subtraction Time: " << AverSubtractionTime << " nanoseconds" << endl;
+            cout << "Average Multiplication Time: " << AverMultiplicationTime << " nanoseconds" << endl;
+            cout << "Average Division Time: " << AverDivisionTime << " nanoseconds" << endl;
+            cout << "Avarange Mod Time: " << AverModTime << "nanoseconds" << endl;
+            cout << "Avarange Square Time: " << AvarSquareTime << "nanoseconds" << endl;
+            cout << "Avarange Pow Time: " << AvarPowTime << "nanoseconds" << endl;
+            cout << "\t" << endl;
+        }
 
     cout << "\t" << endl;
     cout << "\t" << endl;
