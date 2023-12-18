@@ -1,4 +1,4 @@
-﻿#include "BigInt.h"
+#include "BigInt.h"
 
 BigInt::BigInt() {
     data.fill(0);
@@ -57,8 +57,8 @@ uint32_t BigInt::HEXCharToDecimal(char c) {
 
 string BigInt::removeLeadingZeros(string& binaryString) const {
     size_t thefirstcharacter = binaryString.find_first_not_of('0');
-    if (thefirstcharacter != std::string::npos)
-        binaryString = binaryString.substr(thefirstcharacter);
+    if (thefirstcharacter != std::string::npos) 
+        binaryString = binaryString.substr(thefirstcharacter); 
     else
         binaryString = "0";
 
@@ -93,31 +93,6 @@ void BigInt::multOneDigit(const uint32_t& digit, BigInt& result) {
 
 int BigInt::BitLenght() const {
     return this->toBinaryString().size();
-}
-
-BigInt BigInt::ShiftBitToHigh(const int index) const {
-    if (index <= 0 || index >= ARRAY_SIZE)
-        return *this;
-    int CountWord = index / 32;
-    int shifts = index % 32;
-    uint32_t carry = 0;
-    BigInt C, result;
-    if (shifts != 0) {
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            C.data[i] = (data[i] << shifts) + carry;
-            carry = data[i] >> (32 - shifts);
-        }
-        for (int i = CountWord; i < ARRAY_SIZE; i++)
-            result.data[i] = C.data[i - CountWord];
-        return result;
-    }
-    else {
-        for (int i = 0; i < ARRAY_SIZE; i++)
-            C.data[i] = data[i];
-        for (int i = CountWord; i < ARRAY_SIZE; i++)
-            result.data[i] = C.data[i - CountWord];
-        return result;
-    }
 }
 
 BigInt& BigInt::operator = (const BigInt& other) {
@@ -172,43 +147,61 @@ BigInt BigInt::operator * (const BigInt& other) {
 }
 
 BigInt BigInt::operator / (const BigInt& other) {
-    if (other == BigInt())
-        return BigInt(0);
-    if (*this == other)
-        return BigInt(1);
-    int k = other.BitLenght();
-    BigInt Quotient;
-    BigInt Remainder = *this;
-    while (Remainder >= other) {
-        int t = Remainder.BitLenght();
-        BigInt temporary = other.ShiftBitToHigh(t - k);
-        if (Remainder < temporary) {
-            t--;
-            temporary = other.ShiftBitToHigh(t - k);
-        }
-        Remainder = Remainder - temporary;
-        BigInt one(1);
-        Quotient = Quotient + one.ShiftBitToHigh(t - k);
-        if (Remainder == other)
-            return Quotient;
+    if (other == BigInt("0")) {
+        cout << "Division by zero is not allowed." << endl; 
     }
+
+    if (*this < other) {
+        return BigInt("0");
+    }
+
+    BigInt A = *this;
+    BigInt B = other;
+    BigInt Quotient;
+    BigInt Remainder;
+    int k = B.BitLenght();
+    Remainder = A;
+    Quotient = BigInt("0");
+
+    while (Remainder >= B) { 
+        int t = Remainder.BitLenght(); 
+        BigInt C = B.ShiftBitToHigh(t - k); 
+          
+        if (Remainder < C) { 
+            t = t - 1;
+            C = B.ShiftBitToHigh(t - k); 
+        } 
+
+        Remainder = Remainder - C;
+        Quotient = Quotient + BigInt("1").ShiftBitToHigh(t - k); 
+    }
+
     return Quotient;
 }
 
 BigInt BigInt::operator % (const BigInt& other) {
-    if (other == BigInt())
-        return *this;
-
-    BigInt Remainder = *this;
-    while (Remainder >= other) {
-        int t = Remainder.BitLenght();
-        BigInt temporary = other.ShiftBitToHigh(t - other.BitLenght());
-        if (Remainder < temporary) {
-            t--;
-            temporary = other.ShiftBitToHigh(t - other.BitLenght());
-        }
-        Remainder = Remainder - temporary;
+    if (other == BigInt("0")) {
+        cout << "Division by zero is not allowed." << endl;
     }
+
+    BigInt A = *this;
+    BigInt B = other;
+    BigInt Remainder;
+    int k = B.BitLenght();
+    Remainder = A;
+
+    while (Remainder >= B) {
+        int t = Remainder.BitLenght();
+        BigInt C = B.ShiftBitToHigh(t - k);
+
+        if (Remainder < C) {
+            t = t - 1;
+            C = B.ShiftBitToHigh(t - k);
+        }
+
+        Remainder = Remainder - C;
+    }
+
     return Remainder;
 }
 
@@ -218,7 +211,7 @@ BigInt BigInt::Square() {
 
 BigInt BigInt::Pow(const BigInt& exponent) {
     string BinaryIntroduction = exponent.toBinaryString();
-    BigInt base = *this; 
+    BigInt base = *this;
     BigInt result(1);
 
     for (int i = BinaryIntroduction.size() - 1; i >= 0; i--) {
@@ -275,6 +268,34 @@ bool BigInt::operator >= (const BigInt& other) const {
 bool BigInt::operator <= (const BigInt& other) const {
     return (*this == other) || (*this < other);
 }
+
+BigInt BigInt::operator >> (int index) const {
+    BigInt result(*this);
+    for (int i = 0; i < ARRAY_SIZE; i++) {
+        if (i + index < ARRAY_SIZE) {
+            result.data[i] = result.data[i + index];
+        }
+        else {
+            result.data[i] = 0;
+        }
+    }
+
+    return result;
+}
+
+BigInt BigInt::operator << (int index) const {
+    BigInt result(*this);
+    for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        if (i - index >= 0) {
+            result.data[i] = result.data[i - index];
+        }
+        else {
+            result.data[i] = 0;
+        }
+    }
+    return result;
+}
+
 
 string BigInt::toHexString() const {
     string HexString;
@@ -336,4 +357,165 @@ BigInt BigInt::generateRandomHEXNumber(const int lenght) {
     BigInt RandomNumber(result);
     return RandomNumber;
 
+}
+
+BigInt BigInt::ShiftBitToHigh(int bits) const {
+
+    BigInt result("0");
+
+    if (bits <= 0) {
+        return *this;
+    }
+    if (bits >= ARRAY_SIZE * 32) { 
+        return result; 
+    }
+
+    int Count = bits / 32;
+    int shifts = bits % 32;
+
+    uint32_t carry = 0; 
+
+    if (shifts != 0) { 
+        for (int i = 0; i < ARRAY_SIZE; i++) {
+            result.data[i] = (this->data[i] << shifts) + carry;
+            carry = (this->data[i] >> (32 - shifts));
+        }
+        for (int i = ARRAY_SIZE - 1; i >= Count; i--) { 
+            result.data[i] = result.data[i - Count];
+        }
+        for (int i = 0; i < Count; i++) {
+            result.data[i] = 0;
+        }
+    }
+    else {
+        for (int i = ARRAY_SIZE - 1; i >= Count; i--) { 
+            result.data[i] = this->data[i - Count]; 
+        }
+        for (int i = 0; i < Count; i++) { 
+            result.data[i] = 0; 
+        }
+    }
+
+    return result;
+}
+
+BigInt BigInt::GCD(const BigInt& other) const {
+    BigInt a = *this;
+    BigInt b = other;
+    while (b != 0) {
+        BigInt temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+BigInt BigInt::LCM(const BigInt& other) const {
+    BigInt a = *this;
+    BigInt b = other;
+    return (a * b) / a.GCD(b);
+}
+
+BigInt BigInt::addWithModulo(BigInt other, BigInt modulus) const {
+    BigInt a = *this;
+    BigInt result("0");
+    result = a + other;
+
+    if (result >= modulus) {
+        result = BarrettReduction(result, modulus, findMu(modulus));
+    }
+
+    return result;
+}
+
+BigInt BigInt::subWithModulo(BigInt other, BigInt modulus) const {
+    BigInt a = *this;
+    BigInt result("0");
+
+    if (a >= other) {
+        result = a - other;
+    }
+    else {
+        result = a + (modulus - other);
+    }
+
+    if (result >= modulus) {
+        result = BarrettReduction(result, modulus, findMu(modulus));
+    }
+
+    return result;
+}
+
+BigInt BigInt::multWithModulo(BigInt other, BigInt modulus) const {
+    BigInt a = *this;
+    BigInt result = a * other;
+    result = BarrettReduction(result, modulus, findMu(modulus));
+    return result;
+}
+
+BigInt BigInt::findMu(BigInt n) const {
+    int length = n.DigitLength();
+    BigInt B("1");
+    B = B << (2 * length); 
+    BigInt temp = B / n; 
+    return temp;
+}
+
+BigInt BigInt::BarrettReduction(BigInt x, BigInt n, BigInt m) const {
+    int k = n.DigitLength();
+    BigInt temporaryX = x;
+    const BigInt temporaryN = n; 
+    const BigInt temporaryM = m; 
+
+    if (temporaryX < temporaryN) { 
+        return temporaryX; 
+    }
+
+    BigInt Quotient = temporaryX >> (k - 1); 
+    Quotient = Quotient * temporaryM; 
+    Quotient = Quotient >> (k + 1);  
+
+    BigInt Remainder = temporaryX - (Quotient * temporaryN); 
+     
+    while (Remainder >= temporaryN) { 
+        Remainder = Remainder - temporaryN; 
+    }
+
+    return Remainder; 
+} 
+
+BigInt BigInt::toSquareWithModulo(BigInt modulus) const {
+    BigInt a = *this;
+    return BigInt(a * a) % modulus;
+}
+
+
+BigInt BigInt::powerModulo(BigInt other, BigInt modulus) const {
+    BigInt a = *this;
+    BigInt result("1");
+    BigInt base = a % modulus;
+    BigInt Mu = findMu(modulus);
+
+    string binaryExp = other.toBinaryString();
+
+    for (int i = binaryExp.length() - 1; i >= 0; --i) {
+        if (binaryExp[i] == '1') {
+            result = BarrettReduction(result * base, modulus, Mu);
+        }
+        base = BarrettReduction(base * base, modulus, Mu);
+    }
+    return result;
+}
+
+int BigInt::DigitLength() const {
+    int length = ARRAY_SIZE;
+    while (data[length - 1] == 0)
+    {
+        length--;
+        if (length == 0)
+        {
+            break;
+        }
+    }
+    return length;
 }
