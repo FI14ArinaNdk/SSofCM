@@ -11,7 +11,7 @@
         BigInt modulus("eb37815d31c58266b4b80eec480567a24cc323e765f48e2b763918f434e108fa0699ac65a3340ebcb23dac90a4b750a70ed92018522c11e84d9b1190a35cc0a3db844ed8823e212bb50992a45692e8abc27f1d7e84f7217afe640b624dc4291d5c28536eebbf264b0b257ecb6b5dc77635dba985cb41db91b6c4a69a9b0aef85");
        
         //LAB2
-        
+     
         cout << "gcd - "<< num1.GCD(num2).toHexString() << endl;
         cout << "\t" << endl;
         cout << "lcm - "<< num1.LCM(num2).toHexString() << endl;
@@ -26,31 +26,8 @@
         cout << "\t" << endl;
         cout << "power - " << num1.powerModulo(num2, modulus).toHexString() << endl;
 
+   
 
-        //LAB1
-        /*
-        BigInt sum = num1 + num2;
-        cout << "num1 + num2 = " << sum.toHexString() << endl;
-        cout << "\t" << endl;
-        BigInt difference = num1 - num2;
-        cout << "num1 - num2 = " << difference.toHexString() << endl;
-        cout << "\t" << endl;
-        BigInt product = num1 * num2;
-        cout << "num1 * num2 = " << product.toHexString() << endl;
-        cout << "\t" << endl;
-        BigInt quotient = num1 / num2;
-        cout << "num1 / num2 = " << quotient.toHexString() << endl;
-        cout << "\t" << endl;
-        BigInt remainder = num1 % num2;
-        cout << "num1 mod num2 = " << remainder.toHexString() << endl;
-        cout << "\t" << endl;
-        BigInt squared = num1.Square();
-        cout << "num1 ^ 2 = " << squared.toHexString() << endl;
-        cout << "\t" << endl;
-        BigInt power = num1.Pow(9);
-        cout << "num1 ^ 9 = " << power.toHexString() << endl;
-        */
-        
         cout << "\t" << endl;
         cout << "\t" << endl;
 
@@ -171,79 +148,82 @@
             cout << "Test LCM - Failed \n ";
         }
         
-    
-        //LAB 1
+
+        cout << "\t" << endl;
+        cout << "\t" << endl;
+
+
         /*
-        BigInt result1 = (A + B) * C; 
-        BigInt result2 = C * (A + B); 
-        BigInt result3 = A * C + B * C; 
-          
-        if (result1 == result2 && result2 == result3) { 
-            cout << "Test 1: (A + B) * C = C * (A + B) = A * C + B * C is passed.\n"; 
-        }
-        else {
-            cout << "Test 1: (A + B) * C = C * (A + B) = A * C + B * C is failed.\n"; 
-        }
+       vector<int> lenght = { 130 };
+       for (const auto lenght : lenght) {
+           double GCDTime = 0.0;
+           double LCMTime = 0.0;
+           double ADDTime = 0.0;
+           double SUBTime = 0.0;
+           double MULTTime = 0.0;
+           double SQTime = 0.0;
+           double POWERTime = 0.0;
 
-        int n = 100;
-        BigInt res1 = A * n;
-        BigInt res2("0"); 
-        for (int i = 0; i < n; i++) { 
-            res2 = res2 + A; 
-        } 
-        if (res1 == res2) {
-            cout << "Test 2: n * A = A + A + ... + A (n times) is passed.\n";
-        }
-        else {
-            cout << "Test 2: n * A = A + A + ... + A (n times) is failed.\n";
-        }
+           for (int i = 0; i < 50; i++) {
+                   BigInt random_num1 = BigInt::generateRandomHEXNumber(lenght);
+               BigInt random_num2 = BigInt::generateRandomHEXNumber(lenght/2);
+               BigInt random_modulus = BigInt::generateRandomHEXNumber(lenght);
 
-        BigInt Add = A + B;
-        BigInt expected1("a69fc4dd23d9a15795b9a65f3e6abc5b6c0c244f5df4290aff6aaefb1a34b4a34f");
-        if (Add == expected1) {
-            cout << "Test 3: Add (A + B) works correctly.\n";
-        }
-        else {
-            cout << "Test 3: Addition (A + B) test failed.\n";
-        }
+               auto GCDStartTime = high_resolution_clock::now();
+               BigInt resultGCD = random_num1.GCD(random_num2).toHexString();
+               auto GCDEndTime = high_resolution_clock::now();
+               GCDTime += duration_cast<milliseconds>(GCDEndTime - GCDStartTime).count();
 
-        BigInt Sub = A - B;
-        BigInt expected2("a69fc4cdc2faf25bcf8e7294d32016e754d3eb5ad0a2953952a8bcac1bc2a67e1b");
-        if (Sub == expected2) {
-            cout << "Test 4: Sub (A - B) works correctly.\n";
-        }
-        else {
-            cout << "Test 4: Sub (A - B) test failed.\n";
-        }
+               auto LCMStartTime = high_resolution_clock::now();
+               BigInt resultLCM = random_num1.LCM(random_num2).toHexString();
+               auto LCMEndTime = high_resolution_clock::now();
+               LCMTime += duration_cast<milliseconds>(LCMEndTime - LCMStartTime).count();
 
-        BigInt Mult = A * B;
-        BigInt expected3("50134b1617b8384112403aabeb651846c957c6bb57289fe1c1320927126f37dca4a65e907a69af02942d7a34558ecdce692efa2d2a712d7bc14afdc88c6e2");
-        if (Mult == expected3) {
-            cout << "Test 5: Multiplication (A * B) works correctly.\n";
-        }
-        else {
-            cout << "Test 5: Multiplication (A * B) test failed.\n";
-        }
+               auto ADDStartTime = high_resolution_clock::now();
+               BigInt resultADD = random_num1.addWithModulo(random_num2, random_modulus).toHexString();
+               auto ADDEndTime = high_resolution_clock::now();
+               ADDTime += duration_cast<milliseconds>(ADDEndTime - ADDStartTime).count();
 
+               auto SUBStartTime = high_resolution_clock::now();
+              BigInt resultSUB = random_num1.subWithModulo(random_num2, random_modulus).toHexString();
+               auto SUBEndTime = high_resolution_clock::now();
+              SUBTime += duration_cast<milliseconds>(SUBEndTime - SUBStartTime).count();
 
-        BigInt Div = B / C; 
-        BigInt expected4("0"); 
-        if (Div == expected4) { 
-            cout << "Test 6: Division (B / C) works correctly.\n";
-        }
-        else {
-            cout << "Test 6: Division (B / C) test failed.\n";
-        }
+               auto MULTStartTime = high_resolution_clock::now();
+               BigInt resultMULT = random_num1.multWithModulo(random_num2, random_modulus).toHexString();
+               auto MULTEndTime = high_resolution_clock::now();
+               MULTTime += duration_cast<milliseconds>(MULTEndTime - MULTStartTime).count();
 
-        BigInt result = C % A;
-        BigInt expected5("92bdd7f6b07d4c9d661ecf91344aca5ee8a24b17d3089ce11a4fe8b34b3341ea74");
-        if (result == expected5) {
-            cout << "Test 7: Mod (C % A) works correctly.\n";
-        }
-        else {
-            cout << "Test 7: Mod (C % A) test failed.\n";
-        }
-        */
+               auto SQStartTime = high_resolution_clock::now();
+               BigInt resultSQ = random_num1.toSquareWithModulo(random_modulus).toHexString();
+               auto SQEndTime = high_resolution_clock::now();
+               SQTime += duration_cast<milliseconds>(SQEndTime - SQStartTime).count();
 
+               auto POWERStartTime = high_resolution_clock::now();
+               BigInt resultPOWER = random_num1.powerModulo(random_num2, random_modulus).toHexString();
+               auto POWEREndTime = high_resolution_clock::now();
+               POWERTime += duration_cast<milliseconds>(POWEREndTime - POWERStartTime).count();
+
+           }
+
+           double AverGCDTime = GCDTime / 50.0;
+           double AverLCMTime = LCMTime / 50.0;
+           double AverADDTime = ADDTime / 50.0;
+           double AverSUBTime = SUBTime / 50.0;
+           double AverMULTTime = MULTTime / 50.0;
+           double AvarSQTime = SQTime / 50.0;
+           double AvarPOWERTime = POWERTime / 50.0;
+
+           cout << "Average GCD Time: " << AverGCDTime << " milliseconds" << endl;
+           cout << "Average LCM Time: " << AverLCMTime << " milliseconds" << endl;
+           cout << "Average ADD Time: " << AverADDTime << " milliseconds" << endl;
+           cout << "Average SUB Time: " << AverSUBTime << " milliseconds" << endl;
+           cout << "Average MULT Time: " << AverMULTTime << "milliseconds" << endl;
+           cout << "Average SQ Time: " << AvarSQTime << "milliseconds" << endl;
+           cout << "Average POWER Time: " << AvarPOWERTime << "milliseconds" << endl;
+           cout << "\t" << endl;
+       }
+       */
+    
         return 0;
     }

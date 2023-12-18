@@ -352,11 +352,15 @@ BigInt BigInt::generateRandomHEXNumber(const int lenght) {
     mt19937 gen(rd());
     uniform_int_distribution<uint32_t> dis(0, UINT32_MAX);
     array<uint32_t, ARRAY_SIZE> result;
-    for (int i = 0; i < lenght; i++)
+    for (int i = 0; i < ARRAY_SIZE; ++i) {
         result[i] = dis(gen);
+    }
     BigInt RandomNumber(result);
-    return RandomNumber;
+    while (RandomNumber.toHexString().length() > lenght) { 
+        RandomNumber = RandomNumber >> 1;
+    }
 
+    return RandomNumber;
 }
 
 BigInt BigInt::ShiftBitToHigh(int bits) const {

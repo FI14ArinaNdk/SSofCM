@@ -48,7 +48,7 @@ public:
 	void fromBinaryString(const string& binaryString);
 
 	BigInt ShiftBitToHigh(const int index) const;
-	BigInt generateRandomHEXNumber(const int lenght);
+	static BigInt generateRandomHEXNumber(const int lenght);
 
 	BigInt GCD(const BigInt& other) const;
 	BigInt LCM(const BigInt& other) const;
