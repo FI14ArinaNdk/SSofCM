@@ -8,7 +8,7 @@
 #include <random>
 
 using namespace std;
-const size_t ARRAY_SIZE = 128;
+const size_t ARRAY_SIZE = 256;
 
 class BigInt {
 private:
@@ -26,8 +26,8 @@ public:
 	BigInt(const string& StringHEX);
 
 	BigInt& operator = (const BigInt& other);
-	BigInt operator + (const BigInt& other);
-	BigInt operator - (const BigInt& other);
+	BigInt operator + (const BigInt& other) const;
+	BigInt operator - (const BigInt& other) const;
 	BigInt operator * (const BigInt& other);
 	BigInt operator / (const BigInt& other);
 	BigInt operator % (const BigInt& other);
@@ -62,7 +62,7 @@ public:
 
 
 	int DigitLength() const;
-	BigInt findMu(BigInt n) const;
+	BigInt findMu(const BigInt& n) const; 
 	BigInt powerModulo(BigInt exponent, BigInt modulus) const;
 
 };

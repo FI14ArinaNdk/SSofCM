@@ -100,7 +100,7 @@ BigInt& BigInt::operator = (const BigInt& other) {
     return *this;
 }
 
-BigInt BigInt::operator + (const BigInt& other) {
+BigInt BigInt::operator + (const BigInt& other) const{
     uint32_t carry = 0;
     BigInt totalresult;
     for (int i = 0; i < data.size(); i++) {
@@ -111,27 +111,27 @@ BigInt BigInt::operator + (const BigInt& other) {
     return totalresult;
 }
 
-BigInt BigInt::operator - (const BigInt& other) {
-
-    if (other > *this) {
-        cout << "Bigger number is subtracted from the smaller" << endl;
-        return 0;
-    }
-
+BigInt BigInt::operator - (const BigInt& other) const{
     uint32_t borrow = 0;
     BigInt resultdifference;
     for (int i = 0; i < data.size(); i++) {
-        uint64_t temporary = static_cast<uint64_t>(data[i]) - static_cast<uint64_t>(other.data[i]) - borrow;
-        if (temporary >> 32 == 0) {
-            resultdifference.data[i] = static_cast<uint32_t>(temporary);
+        int64_t temp = static_cast<int64_t>(data[i]) - static_cast<int64_t>(other.data[i]) - borrow;
+        if (temp >= 0) {
+            resultdifference.data[i] = static_cast<uint32_t>(temp);
             borrow = 0;
         }
         else {
-            resultdifference.data[i] = static_cast<uint32_t>(temporary + (1Ull << 32));
+            resultdifference.data[i] = static_cast<uint32_t>(0xFFFFFFFF + temp + 1);
             borrow = 1;
         }
     }
+    if (borrow == 1) {
+        cout << "Bigger number is subtracted from the smaller" << endl;
+        return 0;
+    }
     return resultdifference;
+
+ 
 }
 
 BigInt BigInt::operator * (const BigInt& other) {
@@ -434,15 +434,19 @@ BigInt BigInt::addWithModulo(BigInt other, BigInt modulus) const {
 
 BigInt BigInt::subWithModulo(BigInt other, BigInt modulus) const {
     BigInt a = *this;
+    BigInt b = other; 
     BigInt result("0");
 
-    if (a >= other) {
-        result = a - other;
+    if (b > modulus) { 
+        b = BarrettReduction(b, modulus, findMu(modulus));  
     }
-    else {
-        result = a + (modulus - other);
+    if (b > a) {
+        result = a + (b - modulus); 
     }
-
+    if (a >= b) {
+        result = a - b;
+    }
+   
     if (result >= modulus) {
         result = BarrettReduction(result, modulus, findMu(modulus));
     }
@@ -457,7 +461,7 @@ BigInt BigInt::multWithModulo(BigInt other, BigInt modulus) const {
     return result;
 }
 
-BigInt BigInt::findMu(BigInt n) const {
+BigInt BigInt::findMu(const BigInt& n) const {
     int length = n.DigitLength();
     BigInt B("1");
     B = B << (2 * length); 
